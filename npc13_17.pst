@@ -1,7 +1,6 @@
 string Name = "±ø¶¡¶þ";
 int Model = 8;
 int Weapon = 7;
-int Weapon2 = 14;
 int Team = 2;
 int View = 250;
 int Think = 60;

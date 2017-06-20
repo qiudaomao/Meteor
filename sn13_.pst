@@ -738,7 +738,7 @@ OnUpdate()
 				ChangeBehavior(c3, "follow", c2);
 				ChangeBehavior(c4, "follow", c2);
 				ChangeBehavior(c5, "follow", c2);
-				ChangeBehavior(c2, "patrol", 117, 102, 110, 14, 21, 20, 122, 135);
+				ChangeBehavior(c2, "patrol", 117, 102, 110, 14, 21, 20, 122, 135, 124);
 				timer0 = now+2;
 				trg1=7;
 			} else {
@@ -807,7 +807,7 @@ OnUpdate()
 						Say(c_final, "我去找屠城报告此事");
 						ChangeBehavior(c_final, "follow", c1);//移动到屠大鹏的位置
 					} else {
-						Say(c_final, "没想到我也没能撑到");
+						Say(c_final, "没想到我也没能撑到告知屠");
 						timer3=now+2;
 						trg6=3;
 					}
@@ -828,12 +828,21 @@ OnUpdate()
 				} else {
 					if (c1>=0 && GetHP(c_final)<=0) {
 						Say(c_final, "没想到我也没能撑到");
+						RemoveNPC(c_final);
 						timer3=now+2;
 						trg6=3;
 					}
 				}
 			}
 			if (trg6==3 && timer3<now) {
+				c1 = GetAnyChar("王强");
+				c2 = GetAnyChar("兵丁一");
+				c3 = GetAnyChar("兵丁二");
+				c4 = GetAnyChar("破空");
+				if (c1>=0 && GetHP(c1)<=0) {RemoveNPC(c1);}
+				if (c2>=0 && GetHP(c2)<=0) {RemoveNPC(c2);}
+				if (c3>=0 && GetHP(c3)<=0) {RemoveNPC(c3);}
+				if (c4>=0 && GetHP(c4)<=0) {RemoveNPC(c4);}
 				c1 = GetAnyChar("屠城");
 				c2 = GetAnyChar("力蒙面");
 				c3 = GetAnyChar("刚蒙面");
@@ -873,10 +882,11 @@ OnUpdate()
 				}
 			}
 		}
-		if (trg1==9 && trg7<6) {//控制范璇一队回报
+
+		if (trg1==9 && trg7<6) {//控制冯浩一队回报
 			int c_final1=-1;//队中最后一人
 			if (trg7==0) {
-				c1 = GetAnyChar("范璇");
+				c1 = GetAnyChar("冯浩");
 				c2 = GetAnyChar("虎丁甲");
 				c3 = GetAnyChar("虎丁乙");
 				c4 = GetAnyChar("无名");
@@ -915,6 +925,10 @@ OnUpdate()
 						ChangeBehavior(c_final1, "follow", c1);//移动到律香川的位置
 						trg7=2;
 					} else {
+						if (c_final1>=0) {
+							Say(c_final1, "没想到我也没做到去告知律总管");
+							RemoveNPC(c_final1);
+						}
 						timer4 = now+2;
 						trg7=3;
 					}
@@ -939,6 +953,14 @@ OnUpdate()
 				}
 			}
 			if (trg7==3) {
+				c1 = GetAnyChar("冯浩");
+				c2 = GetAnyChar("虎丁甲");
+				c3 = GetAnyChar("虎丁乙");
+				c4 = GetAnyChar("无名");
+				if (c1>=0 && GetHP(c1)<=0) {RemoveNPC(c1);}
+				if (c2>=0 && GetHP(c2)<=0) {RemoveNPC(c2);}
+				if (c3>=0 && GetHP(c3)<=0) {RemoveNPC(c3);}
+				if (c4>=0 && GetHP(c4)<=0) {RemoveNPC(c4);}
 				c1 = GetAnyChar("律香川");
 				c2 = GetAnyChar("迅蒙面");
 				c3 = GetAnyChar("隐蒙面");
