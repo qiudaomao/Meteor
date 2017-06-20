@@ -1,0 +1,235 @@
+// 决死阵
+int Rule = 1;
+int RoundTime = 5;
+int PlayerSpawn = 20;
+int PlayerSpawnDir = 90;
+int PlayerWeapon = 5;
+int PlayerWeapon2 = 1;
+int PlayerHP = 3000;
+
+
+int trg0 = 0;
+int trg1 = 0;
+int timer0 = 0;
+int timer1 = 0;
+int gameover = 0;
+
+OnStart()
+{
+	AddNPC("npc09_01");
+	AddNPC("npc09_02");
+}
+
+OnUpdate()
+{	
+	int player = GetAnyChar("player");
+	if (player < 0)
+	{
+		return 0;
+	}
+	if (gameover == 2)
+	{
+		return 0;
+	}
+	
+	int c;
+	int c2;
+	int now = GetGameTime();
+	
+	
+	if (trg0 == 0)
+	{
+		c = GetChar("冷燕");
+		c2 = GetChar("屠城");
+		
+		if (c>=0 && c2>=0)
+		{
+			SetTarget(0, "waypoint", 15);
+			ChangeBehavior(c2, "attacktarget", 0);
+			Perform(c2, "pause", 2);
+			Perform(c2, "say", "看狗咬狗真是快活呀！！");
+			Perform(c2, "pause", 2);
+			Perform(c2, "say", "现在解药只剩一瓶，就让你们两个去争吧！");
+			Perform(c2, "pause", 2);
+			Perform(c2, "say", "杀手也会被暗算，很不是滋味是吗？");
+			Perform(c2, "pause", 4);
+			Perform(c2, "say", "你的目的就是要杀范璇﹒﹒﹒﹒如何？？他真的是死了吧！");
+			Perform(c2, "pause", 2);
+			Perform(c2, "say", "呵﹒﹒料想不到我会装死吧！");
+			Perform(c2, "pause", 5);
+			Perform(c2, "say", "哇哈哈哈！");
+			Perform(c2, "faceto", player);
+			
+			Perform(c, "attack");
+			Perform(c, "faceto", player);
+			Perform(c, "guard", 4);
+			Perform(c, "faceto", player);
+			Perform(c, "say", "呵﹒﹒这解药我是要定了！！");
+			Perform(c, "pause", 23);
+			Perform(c, "faceto", player);
+			Perform(c, "use", 14);
+			
+			PlayerPerform("block", 0);
+			PlayerPerform("say", "﹒﹒﹒﹒﹒");
+			PlayerPerform("pause", 7);
+			PlayerPerform("say", "﹒﹒﹒﹒﹒");
+			PlayerPerform("pause", 9);
+			PlayerPerform("say", "﹒﹒﹒﹒﹒");
+			PlayerPerform("pause", 6);
+			PlayerPerform("say", "你﹒﹒你不是已经被我﹒﹒﹒！？");
+			PlayerPerform("pause", 3);
+			PlayerPerform("use", 14);
+			PlayerPerform("block", 1);
+			
+			trg0 = 1;
+			timer0 = now + 19;
+		}
+	}
+	if (trg0==1 && now>timer0)
+	{
+		c = GetChar("屠城");
+		if (c >= 0)
+		{
+			RemoveNPC(c);
+			trg0 = 2;
+		}
+	}
+	
+	if (trg0==2 && now>60)
+	{
+		c = GetChar("冷燕");
+		if (c >= 0)
+		{			
+			Perform(c, "guard", 6);
+			Perform(c, "say", "﹒﹒﹒﹒﹒﹒﹒");
+			Perform(c, "pause", 4);
+			Perform(c, "say", "怕了吗？？");
+			Perform(c, "faceto", player);
+			Perform(c, "pause", 4);
+			Perform(c, "say", "来呀！！怎麽？？你就只有这麽一点能耐吗？？");
+			Perform(c, "faceto", player);
+			
+			PlayerPerform("say", "（想不到一个不注意竟然落得如此田地）");
+			PlayerPerform("pause", 4);
+			PlayerPerform("say", "﹒﹒﹒我﹒﹒并没有意要跟你争！！");
+			PlayerPerform("pause", 4);
+			PlayerPerform("say", "﹒﹒﹒﹒﹒");
+			PlayerPerform("pause", 4);
+			
+			trg0 = 3;
+		}				
+	}
+	
+	if (trg0==3 && now>90)
+	{
+		c = GetChar("冷燕");
+		if (c >= 0)
+		{			
+			Perform(c, "guard", 7);
+			Perform(c, "say", "别以为我是个弱女子！就对我手下留情！！");
+			Perform(c, "faceto", player);
+			Perform(c, "pause", 5);
+			Perform(c, "say", "快呀！只有拼个你死活我，只有最後留下的人才能离开！");
+			Perform(c, "faceto", player);
+			
+			PlayerPerform("say", "（难道一开始就被人所设计﹒﹒﹒）");
+			PlayerPerform("pause", 5);
+			PlayerPerform("say", "﹒﹒﹒﹒﹒（这一切到底是怎麽一回儿事﹒﹒﹒范璇的死﹒﹒）");
+			PlayerPerform("pause", 7);
+		
+			trg0 = 4;			
+		}
+	}
+	
+	if (trg0==4 && now>120)
+	{
+		c = GetChar("冷燕");
+		if (c >= 0)
+		{			
+			Perform(c, "guard", 7);
+			Perform(c, "say", "你分明就是瞧不起我！今天要是不让你死，有辱我杀手的名号！！");
+			Perform(c, "faceto", player);
+			Perform(c, "pause", 5);
+			Perform(c, "say", "﹒﹒﹒﹒﹒出手呀！认真一点！！");
+			Perform(c, "faceto", player);
+			
+			PlayerPerform("say", "（杀手！﹒﹒﹒这女子也是一位杀手，难道她也是跟我一样，是来杀范璇的？）");
+			PlayerPerform("say", "！！");
+			PlayerPerform("pause", 5);
+			PlayerPerform("say", "﹒﹒﹒﹒﹒（而这女子﹒﹒为什麽会在这﹒﹒）");
+			PlayerPerform("pause", 4);
+			
+			trg0 = 5;			
+		}
+	}
+	
+	if (trg0==5 && now>150)
+	{
+		c = GetChar("冷燕");
+		if (c >= 0)
+		{			
+			Perform(c, "guard", 7);
+			Perform(c, "say", "﹒﹒﹒﹒哼！！要不是我身中奇毒，你早就﹒﹒﹒﹒");
+			Perform(c, "faceto", player);
+			Perform(c, "pause", 5);
+			Perform(c, "say", "﹒﹒﹒﹒﹒﹒");
+			Perform(c, "faceto", player);
+			Perform(c, "pause", 5);
+			Perform(c, "say", "怎麽？知道我是杀手你就怕了吗？？");
+			Perform(c, "faceto", player);
+			
+			PlayerPerform("say", "（她也被屠城下了毒﹒﹒﹒看样子我得想法子离开这里，再另寻他法﹒﹒）");
+			PlayerPerform("pause", 5);
+			PlayerPerform("say", "﹒﹒呜﹒﹒（体内的毒已经开始侵蚀全身了﹒﹒）");
+			PlayerPerform("pause", 5);
+			PlayerPerform("say", "（﹒﹒﹒﹒这﹒﹒那她﹒﹒﹒的主使者是谁？？）");
+			PlayerPerform("pause", 4);
+			
+			trg0 = 6;			
+		}
+	}	
+	
+	if (trg0==6 && now>180)
+	{
+		c = GetChar("冷燕");
+		if (c >= 0)
+		{			
+			ChangeBehavior(c, "idle");
+			Perform(c, "faceto", player);
+			Perform(c, "crouch", 0);
+			Perform(c, "pause", 10);
+			Perform(c, "say", "﹒﹒﹒﹒﹒﹒");
+			Perform(c, "faceto", player);
+			Perform(c, "pause", 7);
+			Perform(c, "say", "快呀！为什麽你不杀了我﹒﹒﹒难道你不想要解药了吗！！");
+			Perform(c, "faceto", player);
+			Perform(c, "crouch", 1);
+			
+			PlayerPerform("say", "﹒﹒﹒﹒﹒﹒");
+			PlayerPerform("pause", 8);
+			PlayerPerform("say", "﹒﹒﹒你先服下它吧﹒﹒﹒");
+			PlayerPerform("pause", 5);
+			
+			trg0 = 7;			
+			timer1 = now + 17;
+			gameover = 1;
+		}
+	}		
+
+	if (gameover!=-1 && GetHP(player)<=0)
+	{
+		gameover = -1;
+		timer1 = now + 2; 
+	}
+	c = GetAnyChar("冷燕");
+	if (gameover!=-1 && c>=0 && GetHP(c)<=0)
+	{			
+		gameover = -1;
+		timer1 = now + 2; 
+	}	
+	if ((gameover==1 || gameover==-1) && now>timer1)
+	{
+		GameOver(gameover);
+		gameover = 2;
+	}
+}

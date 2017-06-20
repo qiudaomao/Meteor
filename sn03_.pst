@@ -1,0 +1,311 @@
+// 一线天
+int Rule = 2;
+int RoundTime = 15;
+int PlayerSpawn = 53;
+int PlayerSpawnDir = 0;
+int PlayerWeapon = 15;
+int PlayerWeapon2 = 0;
+int PlayerHP = 1500;
+
+int trg0 = 0;
+int trg1 = 0;
+int trg2 = 0;
+int trg3 = 0;
+int trg4 = 0;
+int trg5 = 0;
+int trg6 = 0;
+int trg7 = 0;
+int trg8 = 0;
+int trg9 = 0;
+int timer0 = 0;
+int timer1 = 0;
+int gameover = 0;
+int now = 0;
+
+
+OnStart()
+{
+	AddNPC("npc03_01");
+	AddNPC("npc03_02");
+	AddNPC("npc03_03");
+	AddNPC("npc03_04");
+	AddNPC("npc03_05");
+	AddNPC("npc03_06");
+}
+
+FindEnemy(int c, int p)
+{
+	int c2;
+	
+	if (c < 0)
+	{
+		return 0;
+	}
+		
+	if (GetEnemy(c) == p)
+	{	
+		c2 = GetChar("疾剑哨兵长");
+		if (c2 >= 0)		
+		{	
+			Perform(c, "say", "报告哨兵长！发现入侵者！");
+			
+			ChangeBehavior(c2, "follow", p);
+			Perform(c2, "say", "所有人给我拿下入侵者！！别让他闯关了！");
+			Perform(c2, "pause", 3);
+		}			
+		return 1;
+	}	
+	
+	return 0;
+}
+
+OnUpdate()
+{
+	int player = GetAnyChar("player");
+	if (player < 0)
+	{
+		return 0;
+	}
+		
+	int c;
+	int c2;
+	int flag;
+
+	if (trg9 == 0)
+	{
+		PlayerPerform("say", "（刚才那巨响是﹒﹒﹒﹒？）");
+		trg9 = 1;
+	}
+	
+	if (trg0 == 0)
+	{
+		c = GetChar("夜猫子");
+		if (c >= 0)
+		{				
+			SetTarget(0, "waypoint", 119);		// near flag position
+			SetTarget(1, "char", player);
+			if (Distance(0, 1) < 400)
+			{
+				ChangeBehavior(c, "follow", "flag");
+				Perform(c, "say", "哈哈哈哈，压成肉酱了吧！！");
+				SetTarget(0, "waypoint", 83);	// stone position
+				ChangeBehavior(c, "attacktarget", 0, 3);
+				trg0 = 1;	
+			}
+		}	
+	}
+
+	if (trg1 == 0)
+	{
+		c = GetChar("土匪﹒铁胡子");
+		if (c >= 0)
+		{		
+			if (GetChar("flag") == c)
+			{
+				Perform(c, "say", "马上来看看这里面放着啥麽好玩意儿～");
+ 					Perform(c, "pause", 8);
+				Perform(c, "say", "哇哈哈哈！这个宝物得来完全不费工夫呀！！");
+				trg1 = 1;
+			}
+		}
+	}
+	if (trg1 == 1)
+	{
+		c = GetChar("土匪﹒铁胡子");
+		if (c>=0 && GetEnemy(c)==player)
+		{
+			ChangeBehavior(c, "patrol", 59, 92, 83);
+			Perform(c, "guard", 5);
+			Perform(c, "say", "你是谁，该不会是想要来抢我的宝物吧！门都没有，只有死路一条！");
+			Perform(c, "faceto", player);
+			trg1 = 2;
+		}
+	}
+	if (trg1 == 2)
+	{
+		c = GetChar("土匪﹒铁胡子");
+		if (c>=0 && GetHP(c)<GetMaxHP(c)/2 && GetEnemy(c)==player)
+		{
+			SetTarget(0, "waypoint", 92);
+			ChangeBehavior(c, "attacktarget", 0);
+			
+			Perform(c, "say", "难得见到你这好身手，改天再跟你玩儿！後会有期了！");
+			Perform(c, "faceto", player);
+			trg1 = 3;
+			timer0 = GetGameTime() + 60;
+		}
+	}
+	if (trg1 == 3)
+	{
+		c = GetChar("土匪﹒铁胡子");
+		if (c>=0 && GetGameTime()>timer0 && GetEnemy(c)==player)
+		{
+			SetTarget(0, "char", c);
+			SetTarget(1, "char", player);
+			if (Distanve(0, 1) < 100)
+			{
+				ChangeBehavior(c, "follow", player);
+				Perform(c, "guard", 3);
+				Perform(c, "say", "你﹒﹒﹒竟然追的上我，看样子得跟你来硬的了！");
+				Perform(c, "faceto", player);				
+				trg1 = 4;
+			}
+		}
+	}	
+	if (trg1>0 && trg1!=5)
+	{
+		c = GetAnyChar("土匪﹒铁胡子");
+		if (c>=0 && GetHP(c)<=0)
+		{
+			Say(c, "我﹒﹒我的宝物﹒﹒﹒﹒");
+			trg1 = 5;
+		}
+	}
+	
+	if (trg2 == 0)
+	{
+		c = GetChar("夜猫子");
+		c2 = GetChar("土匪﹒铁胡子");
+		if (c>=0 && c2>=0 && GetEnemy(c)==c2 && GetEnemy(c2)==c)
+		{
+			flag = GetChar("flag");
+			if (flag == c)
+			{
+				Perform(c2, "aggress");
+				Perform(c2, "say", "看我不把你剁成碎片不成！");
+				Perform(c2, "faceto", c);
+				trg2 = 1;
+			}			
+			
+			if (flag == c2)
+			{			
+				Perform(c2, "pause", 4);
+				Perform(c, "aggress");
+				Perform(c, "say", "你还是乖乖把宝物交出来吧！");
+				Perform(c, "faceto", c2);
+				
+				Perform(c2, "aggress");
+				Perform(c2, "say", "你这副贱嘴脸！看了就讨打！！");
+				Perform(c2, "pause", 4);
+				Perform(c2, "faceto", c);
+				trg2 = 1;
+			}			
+		}
+	}
+	
+	if (trg3 == 0)
+	{
+		c = GetChar("夜猫子");
+		if (c>=0 && GetEnemy(c)==player)
+		{			
+			Perform(c, "aggress");
+			Perform(c, "say", "嘻嘻嘻！");
+			Perform(c, "faceto", player);
+			
+			PlayerPerform("say", "﹒﹒﹒﹒﹒﹒");
+			PlayerPerform("pause", 4);
+			
+			trg3 = 1;
+		}		
+	}
+	if (trg3 == 1)
+	{
+		c = GetChar("夜猫子");
+		if (c>=0 && GetEnemy(c)==player)
+		{
+			if (GetChar("flag") == c)
+			{
+				ChangeBehavior(c, "run");
+				Perform(c, "say", "宝物在我身上有本事就过来抢吧！");		
+				Perform(c, "faceto", player);
+				
+				PlayerPerform("say", "﹒﹒﹒﹒﹒﹒");
+				PlayerPerform("pause", 5);
+								
+				trg3 = 2;
+			}
+		}		
+	}
+	
+	if (trg4 == 0)
+	{
+		c = GetChar("flag");
+		if (c == player)
+		{
+			c2 = GetChar("夜猫子");			
+			if (c2 >= 0)
+			{
+				ChangeBehavior(c2, "follow", "flag");				
+			}						
+			
+			PlayerPerform("say", "（看样子要通过这里的关卡不简单！只好先开启机关门，再迅速闯入）");
+			PlayerPerform("pause", 3);
+			PlayerPerform("say", "（这应该就是'高老大，所说的通关信物吧！）");
+			trg4 = 1;
+		}
+	}
+	if (trg4 == 1)
+	{
+		c = GetChar("土匪﹒铁胡子");
+		if (c>=0 && GetEnemy(c)==player)
+		{
+			Perform(c, "attack");
+			Perform(c, "say", "乖乖留下你身上的所有东西当作买路财吧！否则讨打！");
+			Perform(c, "faceto", player);
+			trg4 = 2;
+		}
+	}
+
+	if (trg5 == 0)
+	{
+		c = GetChar("火枪哨兵﹒甲");
+		if (FindEnemy(c, player))
+		{
+			trg5 = 1;
+		}		
+	}	
+	
+	if (trg6 == 0)
+	{
+		c = GetChar("火枪哨兵﹒乙");
+		if (FindEnemy(c, player))
+		{
+			trg6 = 1;
+		}		
+	}
+	
+	if (trg7 == 0)
+	{
+		c = GetChar("火枪哨兵﹒丙");
+		if (FindEnemy(c, player))
+		{
+			trg7 = 1;
+		}		
+	}		
+		
+	if (trg5==0 && trg6==0 && trg7==0 && trg8==0)
+	{
+		c = GetChar("疾剑哨兵长");
+		if (c>=0 && GetEnemy(c)==player)		
+		{	
+			ChangeBehavior(c, "follow", player);
+			Perform(c, "say", "所有人给我拿下入侵者！！别让他闯关了！");
+			Perform(c, "pause", 3);
+			Perform(c, "faceto", player);
+			trg8 = 1;
+		}			
+	}
+	
+	
+	now = GetGameTime();	
+	if (gameover==0 && GetHP(player)<=0)
+	{
+		gameover = -1;
+		timer1 = now + 2; 
+	}
+	if ((gameover==1 || gameover==-1) && now>timer1)
+	{
+		GameOver(gameover);
+		gameover = 2;
+	}	
+}

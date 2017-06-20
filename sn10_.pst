@@ -1,0 +1,502 @@
+// 炼铁狱
+int Rule = 4;
+int RoundTime = 30;
+int PlayerSpawn = 38;
+int PlayerSpawnDir = 100;
+int PlayerWeapon = 31;
+int PlayerWeapon2 = 33;
+int PlayerHP = 3000;
+
+int trg0 = 0;
+int trg1 = 0;
+int trg2 = 0;
+int trg3 = 0;
+int trg4 = 0;
+int timer0 = 0;
+int timer1 = 0;
+int timer2 = 0;
+int timer3 = 0;
+int timer4 = 0;
+int reborn = -1;
+string rebornName;
+
+OnStart()
+{
+	AddNPC("npc10_01");
+}
+
+OnUpdate()
+{
+	int player = GetChar("player");
+	if (player < 0)
+	{
+		return 0;
+	}
+	
+	int c;
+	int c2;
+	int c3;
+	int c4;
+	int c5;
+	int now = GetGameTime();
+	
+	if (trg0 == 0)
+	{
+		c = GetChar("屠城");
+		if (c >= 0)
+		{
+			Perform(c, "faceto", player);			
+			PlayerPerform("use", 14);
+			trg0 = 1;
+		}
+	}
+	
+	if (trg0 == 1)
+	{
+		c = GetChar("屠城");
+		SetTarget(0, "char", c);
+		SetTarget(1, "char", player);
+		if (c>=0 && GetEnemy(c)==player && Distance(0, 1)<150)
+		{	
+			Perform(c, "use", 7);
+			Perform(c, "use", 4);
+			Perform(c, "aggress");
+			Perform(c, "say", "现在只有拿你和冷燕的尸首去向帮主请罪！拿命来！！");
+			Perform(c, "pause", 2);
+			Perform(c, "say", "你不愿听命於我那只有死路一条！");
+			Perform(c, "pause", 7);
+			Perform(c, "say", "你们这些杀手，说穿了只是会听话的狗而已！");
+			Perform(c, "pause", 5);
+			Perform(c, "say", "呵！你不知道的事情可多着！");
+			Perform(c, "pause", 5);
+			Perform(c, "say", "绝对比你的狗窝快活林还要来的快活多了！");
+			Perform(c, "pause", 2);
+			Perform(c, "say", "你就作我的左右手，包你有享不尽的容华富贵");
+			Perform(c, "pause", 2);
+			Perform(c, "say", "看你的功夫还有两下子，我很赏识你！");
+			Perform(c, "pause", 5);
+			Perform(c, "say", "怎麽？狗咬狗的感觉如何呀？？");
+			Perform(c, "pause", 2);
+			Perform(c, "say", "想不到你能活到现在，没把你们整死真是可惜");
+			Perform(c, "faceto", player);
+			
+			PlayerPerform("block", 0);
+			PlayerPerform("pause", 10);			
+			PlayerPerform("say", "（难道﹒﹒这一切的计画﹒﹒﹒）");
+			PlayerPerform("pause", 4);			
+			PlayerPerform("say", "﹒﹒﹒﹒﹒");
+			PlayerPerform("pause", 7);			
+			PlayerPerform("say", "！？﹒﹒你﹒﹒怎知我是快活林的人！？");
+			PlayerPerform("pause", 10);			
+			PlayerPerform("say", "﹒﹒﹒﹒﹒");
+			PlayerPerform("pause", 6);			
+			PlayerPerform("block", 1);
+		
+			trg0 = 2; 
+			timer1 = now + 80;			
+		}		
+	}
+	
+	if (trg0==2 && now>timer1)
+	{
+		c = GetChar("屠城");
+		if (c >= 0)
+		{
+			Perform(c, "use", 4);
+			Perform(c, "use", 7);
+			Perform(c, "say", "哈哈哈哈！！凭你这一点能耐是杀不了我的！！");			
+			Perform(c, "aggress");
+			Perform(c, "faceto", player);
+			ChangeBehavior(c, "dodge", player);
+			
+			trg0 = 3;
+			timer1 = now + 180;
+		}				
+	}
+	if (trg0==3 && now>timer1)
+	{
+		c = GetChar("屠城");
+		if (c >= 0)
+		{
+			Perform(c, "use", 4);
+			Perform(c, "use", 7);
+			Perform(c, "say", "你尽管放马过来吧！我先来陪你玩一玩再让你死！！");			
+			Perform(c, "aggress");
+			Perform(c, "faceto", player);
+			ChangeBehavior(c, "dodge", player);
+			
+			trg0 = 4;
+			timer1 = now + 180;
+		}				
+	}	
+	if (trg0==4 && now>timer1)
+	{
+		c = GetChar("屠城");
+		if (c >= 0)
+		{
+			Perform(c, "use", 4);
+			Perform(c, "use", 7);
+			Perform(c, "say", "怎麽？害怕了吗？？");			
+			Perform(c, "aggress");
+			Perform(c, "faceto", player);
+			ChangeBehavior(c, "dodge", player);
+			
+			trg0 = 2;
+			timer1 = now + 180;
+		}				
+	}		
+	
+	if (trg2 == 0)
+	{
+		c = GetChar("屠城");
+		if (c>=0 && GetHP(c)<GetMaxHP(c)/3)
+		{
+			Perform(c, "attack");
+			Perform(c, "faceto", player);
+			Perform(c, "say", "来人呀！杀了他！！");
+			Perform(c, "pause", 3);
+			Perform(c, "say", "你﹒﹒﹒你这家伙！！看我怎麽治你！！");
+			Perform(c, "faceto", player);
+					
+			trg2 = 1;
+			timer0 = now + 6;
+		}	
+	}
+	
+	if (trg2==1 && now>timer0)
+	{
+		AddNPC("npc10_02");
+		AddNPC("npc10_03");
+		AddNPC("npc10_04");
+		AddNPC("npc10_05");
+		
+		trg2 = 2;
+	}	
+	if (trg2 == 2)
+	{		
+		c = GetAnyChar("屠城");
+		if (c>=0 && GetHP(c)<=0)
+		{
+			Say(c, "﹒﹒﹒﹒想不到﹒﹒﹒我会死在你﹒﹒手中﹒﹒﹒﹒");		
+			
+			PlayerPerform(c, "﹒﹒﹒﹒﹒﹒");
+			PlayerPerform(c, "pause", 3);
+			
+			ChangeBehavior(c2, "idle");
+			Perform(c2, "faceto", c);
+			ChangeBehavior(c3, "idle");
+			Perform(c3, "faceto", c);
+			ChangeBehavior(c4, "idle");
+			Perform(c4, "faceto", c);
+			ChangeBehavior(c5, "idle");
+			Perform(c5, "faceto", c);
+
+			trg2 = 3;			
+		}
+	}
+	
+	if (trg3==0 && trg2==2)
+	{
+		c2 = GetAnyChar("蒙面人﹒甲");
+		if (c2>=0 && GetHP(c2)<=0)
+		{
+			reborn = c2;
+			rebornName = "npc10_02";
+			trg3 = 1;
+			timer4 = now + 25;
+		}
+		c3 = GetAnyChar("蒙面人﹒乙");
+		if (c3>=0 && GetHP(c3)<=0)
+		{
+			reborn = c3;
+			rebornName = "npc10_03";
+			trg3 = 1;
+			timer4 = now + 25;
+		}
+		c4 = GetAnyChar("蒙面人﹒丙");
+		if (c4>=0 && GetHP(c4)<=0)
+		{
+			reborn = c4;
+			rebornName = "npc10_04";
+			trg3 = 1;
+			timer4 = now + 25;
+		}
+		c5 = GetAnyChar("蒙面人﹒丁");
+		if (c5>=0 && GetHP(c5)<=0)
+		{
+			reborn = c5;
+			rebornName = "npc10_05";
+			trg3 = 1;
+			timer4 = now + 25;
+		}
+	}				
+	if (trg3==1 && now>timer4)
+	{
+		RemoveNPC(reborn);
+		timer4 = now + 5;
+		trg3 = 2;
+	}
+	if (trg3==2 && now>timer4)
+	{
+		AddNPC(rebornName);
+		trg3 = 0;
+	}
+
+	if (trg4==0 && trg2==2)
+	{
+		c = GetChar("屠城");
+		SetTarget(0, "char", c);
+		SetTarget(1, "char", player);
+		if (c>=0 && GetHP(c)<GetMaxHP(c)/5 && GetHP(player)<GetMaxHP(player)/6 && Distance(0, 1)<150)
+		{
+			Perform(c, "use", 15);
+			Perform(c, "use", 15);
+			Perform(c, "use", 15);
+			Perform(c, "use", 15);
+			Perform(c, "use", 19);
+			Perform(c, "say", "可恶！竟然敬酒不吃，就让我成全你想死的念头吧！");
+			Perform(c, "pause", 6);
+			Perform(c, "say", "！？");
+			Perform(c, "pause", 13);
+			Perform(c, "say", "﹒﹒﹒﹒﹒");
+			Perform(c, "pause", 10);
+			Perform(c, "say", "你们不配当人，只配当狗！！");
+			Perform(c, "pause", 6);
+			Perform(c, "say", "！？");
+			Perform(c, "pause", 5);
+			Perform(c, "say", "能有这样的福份，你真该好好把握才是﹒﹒呵");
+			Perform(c, "pause", 2);
+			Perform(c, "say", "你们这些杀手终日只能处在不见天日的地方生活");
+			Perform(c, "pause", 6);
+			Perform(c, "say", "想必我要登上分舵主指日可待了！哇哈哈哈！");
+			Perform(c, "pause", 2);
+			Perform(c, "say", "我就拿她的尸首去跟「帮主﹒万鹏王」交差就可以了！");
+			Perform(c, "pause", 2);
+			Perform(c, "say", "反正，那女娃儿功夫那麽地差，也不须要她了");
+			Perform(c, "pause", 7);
+			Perform(c, "say", "还让你当我的左右手，算是很宽宏大量的了");
+			Perform(c, "pause", 2);
+			Perform(c, "say", "呵！大人有大量，我赦免你一死！");
+			Perform(c, "pause", 2);
+			Perform(c, "say", "我们「分舵主﹒范璇」一死，我自然就会登上分舵主的宝座了");
+			Perform(c, "pause", 6);
+			Perform(c, "say", "怎麽？知情後害怕了吗？？？呵﹒﹒");
+			Perform(c, "pause", 3);
+			Perform(c, "say", "只好由我来亲手解决了﹒﹒");
+			Perform(c, "pause", 2);
+			Perform(c, "say", "可是那女娃儿功夫差，被范璇逮个正着﹒﹒这下子暗杀行动曝了光");
+			Perform(c, "pause", 2);
+			Perform(c, "say", "我原本是要让那女娃儿杀掉范璇，然後让从正面闯入的你当个代罪羔羊﹒﹒");
+			Perform(c, "pause", 6);
+			Perform(c, "say", "我这就告诉你，你跟那女娃儿都是我找来要杀范璇的～");
+			Perform(c, "pause", 2);
+			Perform(c, "say", "哼！你们这些当人家乖狗儿的杀手，从不会过问委托人是谁");
+			Perform(c, "pause", 6);
+			Perform(c, "say", "怎麽？？很惊讶吗？？？");
+			Perform(c, "pause", 5);
+			Perform(c, "say", "这下子我可是找对人了！");
+			Perform(c, "pause", 2);
+			Perform(c, "say", "功夫自然是在你之下﹒不但如此，他连范璇也杀不了～");
+			Perform(c, "pause", 2);
+			Perform(c, "say", "那个女娃儿无法治的了你！");
+			Perform(c, "pause", 5);
+			Perform(c, "say", "我可是英雄惜英雄，留条後路给你走﹒﹒");
+			Perform(c, "pause", 6);
+			Perform(c, "say", "而且还有大把大把的银子可花，何乐而不为呢？");
+			Perform(c, "pause", 2);
+			Perform(c, "say", "我这还有一瓶解药，只要你点头就不必如此痛苦了");
+			Perform(c, "pause", 4);
+			Perform(c, "say", "早跟你说了，当我的左右手也没啥不好的嘛！");
+			Perform(c, "pause", 4);
+			Perform(c, "say", "怎麽啦？？毒性是不是已经侵蚀全身了！？");
+			Perform(c, "pause", 2);
+			Perform(c, "say", "所有人退下！！");
+			Perform(c, "pause", 3);
+			Perform(c, "faceto", player);
+			
+			PlayerPerform("block", 0);
+			PlayerPerform("pause", 6);
+			PlayerPerform("use", 19);			
+			PlayerPerform("say", "我不会让在你死的时候感到一丝痛苦地！！");
+			PlayerPerform("pause", 6);
+			PlayerPerform("say", "还好﹒﹒﹒我还留有一颗心﹒﹒﹒ 不像你﹒﹒");
+			PlayerPerform("pause", 2);
+			PlayerPerform("say", "而你﹒﹒﹒竟然如此玩弄别人的性命﹒﹒﹒");
+			PlayerPerform("pause", 2);
+			PlayerPerform("say", "但是﹒﹒﹒我从不会让目标感到痛苦，就让他死去﹒﹒﹒");
+			PlayerPerform("pause", 8);
+			PlayerPerform("say", "成天就像行尸走肉一般﹒﹒");
+			PlayerPerform("pause", 2);
+			PlayerPerform("say", "为了生存，永远只能活在黑暗的地方﹒﹒﹒");
+			PlayerPerform("pause", 2);
+			PlayerPerform("say", "﹒﹒﹒杀手﹒﹒虽然只是工具﹒﹒");
+			PlayerPerform("pause", 6);
+			PlayerPerform("say", "﹒﹒﹒﹒﹒");
+			PlayerPerform("pause", 5);
+			PlayerPerform("use", 15);
+			PlayerPerform("use", 15);
+			PlayerPerform("use", 20);
+			PlayerPerform("say", "你﹒﹒把人当做是什麽！！");
+			PlayerPerform("pause", 9);
+			PlayerPerform("say", "你！！﹒﹒﹒﹒");
+			PlayerPerform("pause", 11);
+			PlayerPerform("say", "﹒﹒﹒﹒﹒");
+			PlayerPerform("pause", 10);
+			PlayerPerform("say", "﹒﹒﹒﹒﹒");
+			PlayerPerform("pause", 6);
+			PlayerPerform("say", "好阴险的人﹒﹒﹒﹒﹒");
+			PlayerPerform("pause", 13);
+			PlayerPerform("say", "﹒﹒﹒﹒﹒");
+			PlayerPerform("pause", 8);
+			PlayerPerform("say", "难道﹒﹒范璇是你杀的﹒﹒﹒");
+			PlayerPerform("pause", 5);
+			PlayerPerform("say", "什麽！？");
+			PlayerPerform("pause", 10);
+			PlayerPerform("say", "﹒﹒﹒﹒﹒");
+			PlayerPerform("pause", 5);
+			PlayerPerform("say", "不必你的假好意！");
+			PlayerPerform("pause", 8);
+			PlayerPerform("say", "﹒﹒你！！");
+			PlayerPerform("pause", 5);
+			PlayerPerform("say", "（可恶﹒﹒﹒再这样下去﹒﹒﹒撑不了多久的﹒﹒）");
+			PlayerPerform("pause", 8);
+			PlayerPerform("say", "﹒﹒﹒呜﹒﹒﹒﹒");
+			PlayerPerform("block", 1);
+			
+			c2 = GetChar("蒙面人﹒甲");
+			if (c2 >= 0)
+			{
+				Perform(c2, "guard", 145);
+				Perform(c2, "faceto", player);
+				ChangeBehavior(c2, "dodge", player);
+			}
+			c2 = GetChar("蒙面人﹒乙");
+			if (c2 >= 0)
+			{
+				Perform(c2, "guard", 145);
+				Perform(c2, "faceto", player);
+				ChangeBehavior(c2, "dodge", player);
+			}
+			c2 = GetChar("蒙面人﹒丙");
+			if (c2 >= 0)
+			{
+				Perform(c2, "guard", 145);
+				Perform(c2, "faceto", player);
+				ChangeBehavior(c2, "dodge", player);
+			}
+			c2 = GetChar("蒙面人﹒丁");
+			if (c2 >= 0)
+			{
+				Perform(c2, "guard", 145);
+				Perform(c2, "faceto", player);
+				ChangeBehavior(c2, "dodge", player);
+			}
+			
+			trg4 = 1;
+			trg1 = 1;
+			trg0 = 5;
+			timer1 = now + 120;
+			timer2 = now + 120;
+		}	
+	}
+
+	if (trg4==1 && now>timer1)
+	{
+		c = GetChar("屠城");
+		if (c >= 0)
+		{
+			Perform(c, "say", "哈哈哈哈！！凭你这一点能耐是杀不了我的！！");			
+			Perform(c, "aggress");
+			Perform(c, "faceto", player);
+			ChangeBehavior(c, "dodge", player);
+			
+			trg4 = 2;
+			timer1 = now + 180;
+		}				
+	}
+	if (trg4==2 && now>timer1)
+	{
+		c = GetChar("屠城");
+		if (c >= 0)
+		{
+			Perform(c, "say", "你尽管放马过来吧！我先来陪你玩一玩再让你死！！");			
+			Perform(c, "aggress");
+			Perform(c, "faceto", player);
+			ChangeBehavior(c, "dodge", player);
+			
+			trg4 = 3;
+			timer1 = now + 180;
+		}				
+	}	
+	if (trg4==3 && now>timer1)
+	{
+		c = GetChar("屠城");
+		if (c >= 0)
+		{
+			Perform(c, "say", "怎麽？害怕了吗？？");			
+			Perform(c, "aggress");
+			Perform(c, "faceto", player);
+			ChangeBehavior(c, "dodge", player);
+			
+			trg4 = 1;
+			timer1 = now + 180;
+		}				
+	}			
+	
+	if (trg1==1 && now>timer2)
+	{
+		c = GetChar("屠城");
+		if (c>=0 && GetHP(c)<GetMaxHP(c)/4)
+		{
+			Perform(c, "use", 15);
+			Perform(c, "say", "哼！气死我了！！看我怎麽让你死！");			
+			Perform(c, "aggress");
+			Perform(c, "faceto", player);
+			ChangeBehavior(c, "dodge", player);
+			trg1 = 2;
+			timer2 = now + 60;
+		}
+	}
+	if (trg1==2 && now>timer2)
+	{
+		c = GetChar("屠城");
+		if (c>=0 && GetHP(c)<GetMaxHP(c)/4)
+		{
+			Perform(c, "use", 15);
+			Perform(c, "say", "想不到你真有两下子﹒﹒真是低估了你！！");			
+			Perform(c, "aggress");
+			Perform(c, "faceto", player);
+			ChangeBehavior(c, "dodge", player);
+			trg1 = 3;
+			timer2 = now + 60;
+		}
+	}	
+	if (trg1==3 && now>timer2)
+	{
+		c = GetChar("屠城");
+		if (c>=0 && GetHP(c)<GetMaxHP(c)/4)
+		{
+			Perform(c, "use", 15);
+			Perform(c, "say", "﹒﹒﹒可恶！你死定了！！");			
+			Perform(c, "aggress");
+			Perform(c, "faceto", player);
+			ChangeBehavior(c, "dodge", player);
+			trg1 = 4;
+			timer2 = now + 60;
+		}
+	}	
+	if (trg1==4 && now>timer2)
+	{
+		c = GetChar("屠城");
+		if (c>=0 && GetHP(c)<GetMaxHP(c)/4)
+		{
+			Perform(c, "use", 15);
+			Perform(c, "say", "﹒﹒﹒可恶！真是气死我了！！");			
+			Perform(c, "aggress");
+			Perform(c, "faceto", player);
+			ChangeBehavior(c, "dodge", player);
+			trg1 = 1;
+			timer2 = now + 60;
+		}
+	}		
+}

@@ -1,0 +1,278 @@
+// 炽雪城
+int Rule = 3;
+int RoundTime = 20;
+int PlayerSpawn = 15;
+int PlayerSpawnDir = 250;
+int PlayerWeapon = 16;
+int PlayerWeapon2 = 13;
+int PlayerHP = 2000;
+
+
+int trg0 = 0;
+int trg1 = 0;
+int trg2 = 0;
+int trg3 = 0;
+int now = 0;
+int survivor = -1;
+int gameover = 0;
+int timer0 = 0;
+
+OnStart()
+{
+	AddNPC("npc04_01");
+	AddNPC("npc04_02");
+	AddNPC("npc04_03");
+	AddNPC("npc04_04");
+	AddNPC("npc04_05");
+	AddNPC("npc04_06");
+	AddNPC("npc04_07");
+}
+
+OnUpdate()
+{
+	int player = GetAnyChar("player");
+	if (player < 0)
+	{
+		return 0;
+	}
+	
+	int c;
+	int c2;
+	int c3;
+	int c4;
+	int c5;
+	
+	if (trg0 == 0)
+	{
+		c = GetChar("禁卫侍官长");
+		c2 = GetChar("禁卫士兵﹒甲");
+		c3 = GetChar("禁卫士兵﹒乙");
+		c4 = GetChar("金枪侍卫﹒甲");
+		c5 = GetChar("金枪侍卫﹒乙");
+		
+		if (c>=0 && c2>=0 && c3>=0 && c4>=0 && c5>=0)
+		{
+			Perform(c, "say", "其它人去把那用假信物想通关的小子给我捉来！");
+			Perform(c, "say", "所有人眼睛给我睁大一点！好好看守这个关卡！");
+			Perform(c, "faceto", c3);
+			
+			Perform(c2, "say", "是！");
+			Perform(c2, "pause", 3);
+			Perform(c2, "faceto", c);
+			
+			Perform(c3, "say", "是！");
+			Perform(c3, "pause", 3);
+			Perform(c3, "faceto", c);			
+			
+			Perform(c4, "pause", 3);
+			Perform(c4, "faceto", c);
+			
+			Perform(c5, "pause", 3);
+			Perform(c5, "faceto", c);
+				
+			PlayerPerform("block", 0);
+			PlayerPerform("say", "（﹒﹒﹒﹒还是别多想﹒﹒﹒先闯了关再想﹒﹒）");
+			PlayerPerform("pause", 1);
+			PlayerPerform("say", "（﹒﹒刚那女子﹒﹒﹒难道也有什麽牵联﹒﹒﹒）");
+			PlayerPerform("pause", 2);
+			PlayerPerform("say", "（﹒﹒﹒﹒﹒﹒）");
+			PlayerPerform("say", "（看样子，现在只有直接破坏这道关卡硬闯了！");
+			PlayerPerform("pause", 2);
+			PlayerPerform("say", "（幸好高老大的计画周详，单闯一个关卡就为我安排了几个方法！）");
+			PlayerPerform("pause", 2);
+			PlayerPerform("say", "（现在无法单靠信物安全通关了，看样子只好另寻它法！）");
+			PlayerPerform("pause", 1);
+			PlayerPerform("say", "（﹒﹒﹒﹒﹒﹒）");
+			PlayerPerform("pause", 1);
+			PlayerPerform("say", "（﹒﹒还是﹒﹒﹒﹒？？）");
+			PlayerPerform("pause", 1);
+			PlayerPerform("say", "（难道是那个贼样的夜猫子搞的鬼？）");
+			PlayerPerform("pause", 1);
+			PlayerPerform("say", "（高老大所说时那个古董商所带的信物，应该是这个没错？）");
+			PlayerPerform("pause", 2);
+			PlayerPerform("say", "（﹒﹒﹒﹒想不到所取得的信物也成了﹒物﹒﹒）");
+			PlayerPerform("pause", 2);
+			PlayerPerform("say", "（﹒﹒﹒﹒假信物﹒﹒﹒）");
+			PlayerPerform("pause", 7);
+			PlayerPerform("block", 1);
+			
+			trg0 = 1;
+		}		
+	}
+	
+	if (trg0 == 1)
+	{
+		c2 = GetChar("禁卫士兵﹒甲");
+		c3 = GetChar("禁卫士兵﹒乙");
+		
+		if (c2>=0 && GetEnemy(c2)==player)
+		{
+			ChangeBehavior(c3, "follow", c2);
+			Perform(c2, "say", "发现了！这小子在这，快来帮忙！");
+			Perform(c2, "faceto", player);
+			trg0 = 2;
+		}
+		if (c3>=0 && GetEnemy(c3)==player)
+		{
+			ChangeBehavior(c2, "follow", c3);
+			Perform(c3, "say", "发现了！这小子在这，快来帮忙！");
+			Perform(c3, "faceto", player);
+			trg0 = 2;
+		}		
+	}	
+	if (trg0 == 2)
+	{
+		c2 = GetAnyChar("禁卫士兵﹒甲");
+		c3 = GetAnyChar("禁卫士兵﹒乙");
+		survivor = -1;
+		if (c2>=0 && GetHP(c2)<=0)
+		{
+			survivor = c3;
+		}
+		if (c3>=0 && GetHP(c3)<=0)
+		{
+			survivor = c2;
+		}
+		
+		if (GetHP(survivor) > 0)
+		{
+			c = GetChar("禁卫侍官长");
+			if (c >= 0)
+			{
+				ChangeBehavior(survivor, "follow", c);
+				Perform(survivor, "say", "可恶！你给我等着！");
+				Perform(survivor, "faceto", player);
+				trg0 = 3;
+			}
+		}				
+	}
+	
+	if (trg0 == 3)
+	{
+		c = GetChar("禁卫侍官长");		
+		if (c>=0 && GetHP(survivor)>0)
+		{
+			SetTarget(0, "char", c);
+			SetTarget(1, "char", survivor);
+			if (Distance(0, 1) < 150)
+			{
+				Perform(survivor, "say", "报告！发现那位闯关的小子了！");
+				Perform(survivor, "faceto", c);
+				
+				ChangeBehavior(c, "follow", player);
+				Perform(c, "say", "走！所有人跟我来！");
+				Perform(c, "pause", 3);
+				Perform(c, "faceto", survivor);
+				
+				c2 = GetChar("金枪侍卫﹒甲");
+				if (c2 >= 0)
+				{
+					ChangeBehavior(c2, "follow", c);
+					Perform(c2, "faceto", c);
+				}
+				c2 = GetChar("金枪侍卫﹒乙");
+				if (c2 >= 0)
+				{
+					ChangeBehavior(c2, "follow", c);
+					Perform(c2, "faceto", c);
+				}
+				trg0 = 4;												
+			}
+		}		
+	}
+	
+	if (trg1 == 0)
+	{
+		c = GetChar("禁卫侍官长");		
+		if (c>=0 && GetEnemy(c)==player)
+		{
+			Perform(c, "aggress");
+			Perform(c, "say", "你这小子，有我在你就别想通过这里！！");
+			Perform(c, "faceto", player);
+			if (trg0 != 4)
+			{		
+				c2 = GetChar("金枪侍卫﹒甲");
+				if (c2 >= 0)
+				{
+					ChangeBehavior(c2, "follow", c);
+					Perform(c2, "guard", 5);
+					Perform(c2, "faceto", player);
+				}
+				c2 = GetChar("金枪侍卫﹒乙");
+				if (c2 >= 0)
+				{
+					ChangeBehavior(c2, "follow", c);
+					Perform(c2, "guard", 5);
+					Perform(c2, "faceto", player);
+				}
+				trg0 = 4;
+			}
+			trg1 = 1;
+		}
+	}	
+	
+	if (trg1 == 1)
+	{
+		c = GetChar("禁卫侍官长");		
+		if (c>=0 && GetHP(c)<GetMaxHP(c)/2)
+		{	
+			c3 = -1;
+			c2 = GetChar("金枪侍卫﹒甲");
+			if (c2 >= 0)
+			{
+				c3 = c2;
+			}
+			c2 = GetChar("金枪侍卫﹒乙");
+			if (c2 >= 0)
+			{
+				c3 = c2;
+			}
+			c2 = GetChar("禁卫士兵﹒甲");
+			if (c2 >= 0)
+			{
+				c3 = c2;
+			}
+			c2 = GetChar("禁卫士兵﹒乙");
+			if (c2 >= 0)
+			{
+				c3 = c2;
+			}
+			
+			if (GetHP(c3) > 0)
+			{
+				Perform(c, "say", "赶快再去叫人来！！");
+				SetTarget(0, "waypoint", 1);
+				ChangeBehavior(c3, "attacktarget", 0);
+				
+				c4 = GetChar("火铳兵﹒甲");
+				if (c4 >= 0)
+				{
+					ChangeBehavior(c4, "kill", player);
+				}
+				c4 = GetChar("火铳兵﹒乙");
+				if (c4 >= 0)
+				{
+					ChangeBehavior(c4, "kill", player);
+				}
+			}
+		
+			Perform(c, "say", "好样的！！看我怎麽治你！");
+			Perform(c," faceto", player);
+		
+			trg1 = 2;
+		}		
+	}
+	
+
+	now = GetGameTime();	
+	if (gameover==0 && GetHP(player)<=0)
+	{
+		gameover = -1;
+		timer0 = now + 2; 
+	}
+	if ((gameover==1 || gameover==-1) && now>timer0)
+	{
+		GameOver(gameover);
+		gameover = 2;
+	}	
+}

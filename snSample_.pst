@@ -1,0 +1,67 @@
+// 場景名稱
+
+// Rule 1=盟主 2=劫鏢 3=護城 4=暗殺 5=死鬥
+int Rule = 5;
+
+// 回合時間（分鐘）
+int RoundTime = 20;
+
+// 玩家出生點
+int PlayerSpawn = 0;
+
+// 玩家出生方向 0~360
+int PlayerSpawnDir = 90;
+
+// 玩家主要武器
+int PlayerWeapon = 5;
+
+// 玩家次要武器
+int PlayerWeapon2 = 0;
+
+// 玩家初始生命值
+int PlayerHP = 1000;
+
+
+/*
+
+API
+
+int GetChar(string name)	// name="player", "vip", "enemyvip", "flag", "xxx"
+int GetAnyChar(string name)		// including dead char
+int GetSelf(int self)
+int GetHP(int id)
+int GetMaxHP(int id)
+int GetTeam(int id)
+int GetEnemy(int id)
+int GetLeader(int id)
+int GetGameTime()
+int EnableWaypoints(int a, int b, ...)
+int DisableWaypoints(int a, int b, ...)
+int ChangeBehavior(int id, string behavior, ...)	// behavior="wait", "idle", "run", "follow", "patrol", "attacktarget", "kill"
+int Perform(int id, string pose, ...)				// pose="faceto", "say", "pause", "aggress", "jump", "attack", "guard", "crouch", "use"
+int PlayerPerform(int id, string pose, ...)			// pose="say", "pause", "use", "block"
+int StopPerform(int id)
+int IsPerforming(int id)
+int SetTarget(int idx, string type, ...)			// type="char", "waypoint", "flag", "safe"
+int Distance(int idx1, int idx2)
+int Rand(int n)
+int AddNPC(string npc)
+int RemoveNPC(int id)
+int UpdateAIAttrib(id)
+int Call(int id, string functionName, param1, param2, ...)
+int Say(id, a, b, c, ...)
+int Print(a, b, c, ...)
+
+*/
+
+// level start function
+OnStart()
+{
+	AddNPC("npc01");
+}
+
+// run function
+OnUpdate()
+{
+	int a = 0;
+}

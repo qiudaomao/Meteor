@@ -1,0 +1,33 @@
+string Name = "Ð¡ºÎ";
+int Model = 12;
+int Weapon = 15;
+int Weapon2 = 14;
+int Team = 1;
+int View = 550;
+int Think = 85;
+int Attack1 = 30;
+int Attack2 = 25;
+int Attack3 = 20;
+int Guard = 15;
+int Dodge = 15;
+int Jump = 25;
+int Look = 65;
+int Burst = 10;
+int Aim = 75;
+int GetItem = 20;
+int Spawn = 124;
+int HP = 2500;
+	
+
+int g_selfAddr;
+int g_self;
+OnInit(int this)
+{
+	g_selfAddr = this;
+}
+
+OnStart()
+{
+	g_self = GetSelf(g_selfAddr);
+	ChangeBehavior(g_self, "idle");	
+}

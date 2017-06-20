@@ -1,0 +1,492 @@
+// 金华城
+int Rule = 5;// Rule 1=盟主 2=截镖 3=守城 4=暗杀 5=死斗 int Rule = 5;
+int RoundTime = 95;
+int PlayerSpawn = 110;//5
+int PlayerSpawnDir = -90;
+int PlayerWeapon = 6;
+int PlayerWeapon2 = 14;
+int PlayerHP = 3000;
+
+int g_counter = 0;
+int trg0 = 0;
+int trg1 = 0;
+int trg2 = 0;
+int trg3 = 0;
+int trg4 = 0;
+int trg5 = 0;
+int timer0 = 0;
+int survivor = -1;
+int now = 0;
+
+OnStart()
+{
+    AddNPC("npc13_27");//范璇
+    AddNPC("npc13_24");//屠大鹏
+    AddNPC("npc13_05");//萧安
+    AddNPC("npc13_16");//兵丁一
+    AddNPC("npc13_29");//小蝶
+}
+
+OnUpdate()
+{
+    int player = GetChar("player");
+    if (player < 0)
+    {
+        return 0;
+    }
+    int c;
+    int c1;
+    int c2;
+    int c3;
+    int c4;
+    int c5;
+    int c_xiaodie;
+    int gameover;
+    now = GetGameTime();
+    if (trg0==0) {
+        c_xiaodie = GetAnyChar("小蝶");
+        if (c_xiaodie>=0 && GetHP(c_xiaodie)<=0) {
+            Say(c_xiaodie, "星哥，来生再见…");
+            gameover=-1;
+            GameOver(gameover);
+        }
+        if (trg1==0) {
+            c = GetChar("范璇");
+            if (c>=0)
+            {
+                Perform(c, "say", "大家小心戒备，有事向我报告!");
+                Perform(c, "pause", 2);
+                trg1 = 1;
+            }
+        }
+        if (trg1==1) {
+            c = GetChar("范璇");
+            if (c>=0)
+            {
+                SetTarget(0, "char", c);
+                SetTarget(1, "char", player);
+                if (Distance(0,1) < 200) {//直接被范璇发现
+                    Perform(c, "guard", 3);
+                    Say(c, "你吃了熊心豹子胆了。来人，将刺客拿下!");
+                    AddNPC("npc13_08");//王强
+                    AddNPC("npc13_11");//破空
+                    ChangeBehavior(c, "follow", player);
+                    ChangeBehavior(c, "attacktarget", 1);
+                    c1 = GetChar("屠大鹏");
+                    if (c1>=0) {
+                        ChangeBehavior(c1, "follow", player);
+                        ChangeBehavior(c1, "attacktarget", 1);
+                    }
+                    c_xiaodie = GetChar("小蝶");
+                    if (c_xiaodie >= 0) {
+                        ChangeBehavior(c_xiaodie, "follow", player);
+                    }
+                    c1 = GetChar("兵丁一");
+                    if (c1>=0) {
+                        ChangeBehavior(c1, "follow", player);
+                        ChangeBehavior(c1, "attacktarget", 1);
+                    }
+                    c1 = GetChar("萧安");
+                    if (c1>=0) {
+                        ChangeBehavior(c1, "follow", player);
+                        ChangeBehavior(c1, "attacktarget", 1);
+                    }
+                    trg1 = 2;
+                }
+            }
+            if (trg1==1 && trg2 == 0) {
+                c = GetChar("萧安");
+                if (c>=0) {
+                    SetTarget(0, "char", c);
+                    SetTarget(1, "char", player);
+                    if (Distance(0,1) < 200) {//被萧安发现
+                        Say(c, "什么人，竟敢闯地牢！");
+                        ChangeBehavior(c, "follow", player);
+                        ChangeBehavior(c, "attacktarget", 1);
+                        c1 = GetChar("兵丁一");
+                        if (c1>=0) {
+                            ChangeBehavior(c1, "follow", c);
+                            ChangeBehavior(c1, "attacktarget", 1);
+                        }
+                        c_xiaodie = GetChar("小蝶");
+                        if (c_xiaodie >= 0) {
+                            ChangeBehavior(c_xiaodie, "follow", player);
+                        }
+                        trg2=1;
+                    }
+                }
+            }
+        }
+        if (trg1==1 && trg2==1) {//检查萧安的HP来决定是否报告或者结束
+            c = GetAnyChar("萧安");
+            if (c>=0) {
+                if (c>=0 && GetHP(c)<=0) {
+                    Say(c, "想不到死在你手里…");
+                    c1 = GetAnyChar("兵丁一");
+                    c2 = GetChar("范璇");
+                    if (c1>=0 && c2>=0 && GetHP(c1)>0) {//小兵去报告
+                        Say(c1, "老大！小子你犯大事了！");
+                        ChangeBehavior(c1, "follow", c2);
+                        trg2=2;
+                    } else {
+                        trg2=4;
+                    }
+                }
+                if (GetHP(c)<GetMaxHP(c)*20/100) {
+                    Say(c, "小子你等着！");
+                    Perform(c, "faceto", player);
+                    c1 = GetChar("范璇");
+                    if (c1>=0) {
+                        ChangeBehavior(c, "follow", c1);
+                    }
+                    trg2=2;
+                }
+            }
+        }
+        if (trg1==1 && (trg2==2 || trg2==3)) {
+            c = GetAnyChar("萧安");
+            c3 = GetAnyChar("兵丁一");
+            if (trg2==2) {
+                if (c>=0 && GetHP(c)<=0) {
+                    Say(c, "想不到死在你手里…");
+                    c2 = GetChar("范璇");
+                    if (c3>=0 && c2>=0 && GetHP(c3)>0) {//小兵去报告
+                        Perform(c3, "faceto", player);
+                        ChangeBehavior(c3, "defense");
+                        Perform(c3, "pause", 3);
+                        Say(c3, "老大！小子你犯大事了！");
+                        ChangeBehavior(c3, "follow", c2);
+                        trg2=3;
+                    } else {
+                        trg2=4;
+                    }
+                }
+            }
+            if (trg2==3) {//小兵去报告
+                if (c3>=0 && GetHP(c3)<=0) {
+                    Say(c3, "还是晚了一步");
+                    trg2=4;
+                    Say(player, "终于安全了");
+                }
+            }
+            if ((c>=0 && GetHP(c)>0) || (c3>=0 && GetHP(c3)>0)) {
+                c1 = GetChar("范璇");
+                if (GetHP(c)<=0) {
+                    c=c3;
+                }
+                if (c>=0 && c1>=0) {
+                    SetTarget(0, "char", c);
+                    SetTarget(1, "char", c1);
+                    if (Distance(0,1)<100) {
+                        if (c==c3) {
+                            Say(c, "禀告堡主，发现刺客!老大被杀!");
+                        } else {
+                            Say(c, "禀告堡主，发现刺客!");
+                        }
+                        SetTarget(0, "char", c1);
+                        SetTarget(1, "char", player);
+                        Say(c1, "吃了熊心豹子胆了。来人，将刺客拿下!");
+                        AddNPC("npc13_08");//王强
+                        AddNPC("npc13_11");//破空
+                        ChangeBehavior(c1, "follow", player);
+                        ChangeBehavior(c1, "attacktarget", 1);
+                        c1 = GetChar("屠大鹏");
+                        if (c1>=0) {
+                            ChangeBehavior(c1, "follow", player);
+                            ChangeBehavior(c1, "attacktarget", 1);
+                        }
+                        c_xiaodie = GetChar("小蝶");
+                        if (c_xiaodie >= 0) {
+                            ChangeBehavior(c_xiaodie, "follow", player);
+                        }
+                        c1 = GetChar("兵丁一");
+                        if (c1>=0) {
+                            ChangeBehavior(c1, "follow", player);
+                            ChangeBehavior(c1, "attacktarget", 1);
+                        }
+                        c1 = GetChar("萧安");
+                        if (c1>=0) {
+                            ChangeBehavior(c1, "follow", player);
+                            ChangeBehavior(c1, "attacktarget", 1);
+                        }
+                        trg1 = 2;
+                    }
+                }
+            }
+        }
+        if (trg1==2) {
+            c1 = GetChar("王强");
+            c2 = GetChar("破空");
+            if (c1>=0 && c2>=0) {
+                SetTarget(0, "char", player);
+                ChangeBehavior(c1, "follow", player);
+                ChangeBehavior(c1, "attacktarget", 0);
+                ChangeBehavior(c2, "follow", player);
+                ChangeBehavior(c2, "attacktarget", 0);
+                trg1=3;
+            }
+        }
+        if (trg1==1 && trg2==4) {//小蝶跑向孙剑
+            c1 = GetChar("小蝶");
+            PlayerPerform("faceto", c1);
+            PlayerPerform("pause", 1);
+            PlayerPerform("say", "终于安全了");
+            PlayerPerform("pause", 3);
+            AddNPC("npc13_07");//暗哨
+            AddNPC("npc13_28");//孙玉伯
+            AddNPC("npc13_06");//孙剑
+            AddNPC("npc13_20");//叶翔
+            AddNPC("npc13_25");//律总管
+            timer0 = now + 2;
+            trg0=1;
+            trg1=0;
+            trg2=0;
+        }
+    }
+    if (trg0==1) {//第二章
+        c1 = GetChar("小蝶");
+        c2 = GetChar("孙剑");
+        c3 = GetChar("孙玉伯");
+        c4 = GetChar("叶翔");
+        c5 = GetChar("律总管");
+        if (trg2==0) {
+            c = GetChar("暗哨");
+            if (c>=0) {
+                SetTarget(0, "char", player);
+                SetTarget(1, "char", c);
+                if(Distance(0,1)<500) {
+                    Say(c, "小子胆大竟敢闯孙家");
+                    ChangeBehavior(c, "follow", player);
+                    trg2=1;
+                }
+            }
+        }
+        if (trg2==1) {//检查暗哨体力
+            c= GetAnyChar("暗哨");
+            if (c>=0 && GetHP(c)>0 && GetHP(c)<GetMaxHP(c)*20/100) {
+                Say(c, "功夫不错，闪了，你等着！");
+                c1 = GetChar("范璇");
+                if (c1>=0) {
+                    ChangeBehavior(c, "follow", c1);
+                    trg2=2;
+                }
+            }
+        }
+        if (trg2==2) {
+            c = GetAnyChar("暗哨");
+            c1 = GetChar("范璇");
+            if (c>=0 && GetHP(c)<=0) {
+                Say(c, "可惜没来得及报告这么重要消息");
+                trg2=4;
+            } else {
+                if (c>=0 && c1>=0) {
+                    SetTarget(0, "char", c);
+                    SetTarget(1, "char", c1);
+                    if (Distance(0,1)<100) {
+                        Say(c, "禀告大鹏，被不明来历的人破坏了。");
+                        Say(c1, "果然不出所料，来人！");
+                        AddNPC("npc13_08");//王强
+                        AddNPC("npc13_11");//破空
+                        trg2=3;
+                    }
+                }
+            }
+        }
+        if (trg2==4) {
+            Say(player, "飞鹏堡那边总算安全了");
+            trg2=5;
+        }
+        if (trg2==3) {
+            c1=GetChar("王强");
+            c2=GetChar("破空");
+            if (c1>=0 && c2>=0) {//飞鹏堡全体追杀
+                c=GetChar("范璇");
+                SetTarget(0, "char", player);
+                if (c>=0) {
+                    ChangeBehavior(c, "follow", player);
+                    ChangeBehavior(c, "attacktarget", 0);
+                }
+                c=GetChar("屠大鹏");
+                SetTarget(0, "char", player);
+                if (c>=0) {
+                    ChangeBehavior(c, "follow", player);
+                    ChangeBehavior(c, "attacktarget", 0);
+                }
+                c=GetChar("王强");
+                SetTarget(0, "char", player);
+                if (c>=0) {
+                    ChangeBehavior(c, "follow", player);
+                    ChangeBehavior(c, "attacktarget", 0);
+                }
+                c=GetChar("破空");
+                SetTarget(0, "char", player);
+                if (c>=0) {
+                    ChangeBehavior(c, "follow", player);
+                    ChangeBehavior(c, "attacktarget", 0);
+                }
+                trg2=4;
+            }
+        }
+        if (trg1==0 && now > timer0) {//10 seonds
+            if (c1>=0 && c2>=0) {
+                SetTarget(0, "char", c2);//孙剑
+                Perform(c1, "say", "星哥，我爹有危险先回家一趟，再会");
+                PlayerPerform("pause", 1);
+                PlayerPerform("say", "小心");
+                ChangeBehavior(c1, "follow", c2);//跑向孙剑
+                trg1=1;
+            }
+        }
+        if (trg1==1) {
+            if (c1>=0 && c2>=0 && c3>=0 && c4>=0) {
+                SetTarget(0, "char", c1);
+                SetTarget(1, "char", c2);
+                SetTarget(2, "char", c4);
+                if (Distance(0,1) < 200) {
+                    c = GetAnyChar("萧安");
+                    if (c>=0) {
+                        RemoveNPC(c);
+                    }
+                    c = GetAnyChar("兵丁一");
+                    if (c>=0) {
+                        RemoveNPC(c);
+                    }
+                    Perform(c3, "say", "已经寻找这么多天，难道还是毫无音讯？");
+                    Perform(c4, "block", 1);
+                    Perform(c4, "say", "排除现今能想到的可能，应作下万一的准备");
+                    Perform(c3, "block", 2);
+                    Perform(c3, "say", "万一？最好万一死在没人知道她是我女儿的所在?");
+                    Perform(c1, "block", 3);
+                    Perform(c1, "say", "让我进去");
+                    Perform(c2, "block", 4);
+                    Perform(c2, "say", "爹没让你回家");
+                    Perform(c2, "block", 5);
+                    Perform(c2, "say", "你走吧，等爹气消了再回来。");
+                    Perform(c2, "block", 6);
+                    Perform(c2, "say", "你被绑架的事，我为你做主。");
+                    timer0 = now+5;
+                    trg1=2;
+                }
+            }
+        }
+        if (trg1==2 && now>timer0) {
+            if (c2>=0 && c4>=0) {
+                RemoveNPC(c1);//小蝶离场
+                ChangeBehavior(c2, "follow", c4);//孙剑跟踪叶翔
+                trg1=3;
+            }
+        }
+        if (trg1==3) {
+            if (c2>=0 && c4>=0) {
+                SetTarget(0, "char", c2);
+                SetTarget(1, "char", c4);
+                if (Distance(0,1)<100) {
+                    ChangeBehavior(c4, "follow", c2);
+                    ChangeBehavior(c2, "attacktarget", 1);
+                    ChangeBehavior(c4, "attacktarget", 0);
+                    trg1=4;
+                }
+            }
+        }
+        if (trg1==4) {
+            c1 = GetAnyChar("孙剑");
+            c2 = GetChar("孙玉伯");
+            if (c1>=0 && GetHP(c1)<=0) {
+                Say(c1, "我堂堂孙家公子竟丧命宵小之手");
+                trg1=6;
+            }
+            if (c1>=0 && GetHP(c1)>0 && GetHP(c1)<=GetMaxHP(c1)*50/100) {
+                Say(c1, "还挺厉害，不和你玩了");
+                if (c2>=0) {
+                    ChangeBehavior(c1, "follow", c2);//孙剑逃命去了
+                    trg1=5;
+                }
+            }
+        }
+        if (trg1==5) {//孙剑逃命中
+            c1 = GetAnyChar("孙剑");
+            if (c1>=0 && GetHP(c1)<=0) {
+                Say(c1, "我堂堂孙家公子竟丧命宵小之手");
+                trg1=6;
+            }
+        }
+        if (trg1==6) {
+            PlayerPerform("say", "小蝶她不会怪我吧");
+            trg1=9;//9意味着解决一个人了
+        }
+        if (trg1==5) {//检查孙剑和孙玉伯的距离
+            c1 = GetChar("孙剑");
+            c2 = GetChar("孙玉伯");
+            if (c1>=0 && c2>=0) {
+                SetTarget(0, "char", c1);
+                SetTarget(1, "char", c2);
+                if (Distance(0,1)<100) {
+                    Say(c1, "拐了小蝶的家伙在追杀我");
+                    Say(c2, "可恶的淫贼，拐了小蝶，还敢追杀我儿，杀了他！");
+                    AddNPC("npc13_09");//冯浩
+                    AddNPC("npc13_10");//无名
+                    trg1=8;
+                }
+            }
+        }
+        if (trg1>=2 && trg1<8) {
+            c=GetChar("孙玉伯");
+            if (c>=0) {
+                SetTarget(0, "char", player);
+                SetTarget(1, "char", c);
+                if (Distance(0,1)<100) {
+                    Say(c2, "可恶的淫贼，拐了小蝶还敢出现，杀了他！");
+                    AddNPC("npc13_09");//冯浩
+                    AddNPC("npc13_10");//无名
+                    trg1=8;
+                }
+            }
+        }
+        if (trg1==8) {
+            //AllKill2();//全部去追杀
+            c1=GetChar("冯浩");
+            c2=GetChar("无名");
+            if (c1>=0 && c2>=0) {//保证两个人都加进去了
+                c=GetChar("孙玉伯");
+                SetTarget(0, "char", player);
+                if (c>=0) {
+                    ChangeBehavior(c, "follow", player);
+                    ChangeBehavior(c, "attacktarget", 0);
+                }
+
+                c=GetChar("律总管");
+                SetTarget(0, "char", player);
+                if (c>=0) {
+                    ChangeBehavior(c, "follow", player);
+                    ChangeBehavior(c, "attacktarget", 0);
+                }
+                c=GetChar("冯浩");
+                SetTarget(0, "char", player);
+                if (c>=0) {
+                    ChangeBehavior(c, "follow", player);
+                    ChangeBehavior(c, "attacktarget", 0);
+                }
+                c=GetChar("无名");
+                SetTarget(0, "char", player);
+                if (c>=0) {
+                    ChangeBehavior(c, "follow", player);
+                    ChangeBehavior(c, "attacktarget", 0);
+                }
+                c=GetChar("暗哨");
+                SetTarget(0, "char", player);
+                if (c>=0) {
+                    ChangeBehavior(c, "follow", player);
+                    ChangeBehavior(c, "attacktarget", 0);
+                }
+                c=GetChar("孙剑");
+                SetTarget(0, "char", player);
+                if (c>=0) {
+                    ChangeBehavior(c, "follow", player);
+                    ChangeBehavior(c, "attacktarget", 0);
+                }
+                trg1=9;
+            }
+        }
+    }
+    g_counter = g_counter + 1;
+}

@@ -1,0 +1,212 @@
+// 炎硫岛
+int Rule = 10;
+int RoundTime = 10;
+int PlayerSpawn = 34;
+int PlayerSpawnDir = 180;
+int PlayerWeapon = 6;
+int PlayerWeapon2 = 0;
+int PlayerHP = 1000;
+
+int trg0 = 0;
+int trg1 = 0;
+int trg2 = 0;
+int trg3 = 0;
+int trg4 = 0;
+
+OnStart()
+{
+	AddNPC("npc14_01");
+	AddNPC("npc14_02");
+}
+
+
+OnUpdate()
+{
+	int player = GetChar("player");
+	if (player < 0)
+	{
+		return 0;
+	}
+	
+	int c;
+	int c2;
+	
+	if (trg0 == 0)
+	{
+		c = GetChar("大刀哨兵");
+		c2 = GetChar("铁枪哨兵");
+		
+		if (c>=0 && c2>=0)
+		{		
+			ChangeBehavior(c, "patrol", 0);
+			Perform(c, "say", "好呗，我也懒得听你的冷笑话﹒﹒");
+			Perform(c, "pause", 12);
+			Perform(c, "say", "真的很冷耶﹒﹒");
+			Perform(c, "say", "﹒﹒﹒﹒﹒﹒﹒");
+			Perform(c, "aggress");
+			Perform(c, "say", "冷个屁呀？四周都是岩浆，热到爆了！真想喝口酒来解热呀！");
+			Perform(c, "pause", 12);
+			Perform(c, "say", "奇怪了，为啥老大会叫我们来这种鸟不生蛋的地方守！=.=");
+			Perform(c, "faceto", c2);			
+			
+			ChangeBehavior(c2, "patrol", 16, 18, 19, 20, 21);
+			Perform(c2, "say", "企企企！");
+			Perform(c2, "pause", 8);
+			Perform(c2, "say", "下次可能真被会被派到北方冰起来也说不定～");
+			Perform(c2, "say", "﹒﹒﹒﹒我还是快回去守着，以免又被发现我们偷懒～");
+			Perform(c2, "aggress", 10);
+			Perform(c2, "say", "喂～我是在讲个冷笑话来解解闷，你不到你这呆头听不懂呀～");
+			Perform(c2, "pause", 8);
+			Perform(c2, "say", "才被分派到这种鸟地方把我们 '冷冻' 起来﹒﹒Ｘ滴！");
+			Perform(c2, "say", "啊知～看样子是我们上次夜哨时偷溜出去喝酒被捉包！");
+			Perform(c2, "pause", 8);
+			Perform(c2, "faceto", c);
+			
+			trg0 = 1;
+		}
+	}
+	
+
+	if (trg1 == 0)
+	{
+		c = GetChar("大刀哨兵");
+		if (c>=0 && GetEnemy(c)==player )
+		{
+			StopPerform(c);
+			c2 = GetChar("铁枪哨兵");
+			StopPerform(c2);
+			
+			Perform(c, "say", "好大的胆子竟敢乱闯禁地，没酒喝，火气正大，先拿你来开刀！");
+			trg1 = 1;
+		}
+	}	
+	if (trg1 == 1)
+	{
+		c = GetChar("大刀哨兵");
+		if (c>=0 && GetEnemy(c)!=player)
+		{
+			Perform(c, "say", "跑到那儿去了！八成是跌入岩浆中了，哈哈哈哈！");
+			trg1 = 2;
+		}	
+	}	
+	if (trg1 == 2)
+	{
+		c = GetChar("大刀哨兵");
+		if (c>=0 && GetEnemy(c)==player)
+		{
+			Perform(c, "say", "好小子，被我发现了吧！这下子你跑不掉了！");
+			trg1 = 3;
+		}
+	}		
+	if (trg1 == 3)
+	{
+		c = GetChar("大刀哨兵");
+		if (c>=0 && GetEnemy(c)!=player)
+		{
+			Perform(c, "aggress");
+			Perform(c, "say", "哼，又躲起来了！缩头鸟龟一只！");
+			trg1 = 4;
+		}	
+	}
+	
+	if (trg2 == 0)
+	{
+		c = GetChar("铁枪哨兵");
+		if (c>=0 && GetEnemy(c)==player)
+		{
+			StopPerform(c);		
+			c2 = GetAnyChar("大刀哨兵");
+			StopPerform(c2);
+			
+			if (c2>=0 && GetHP(c2)>0)
+			{
+				ChangeBehavior(c2, "follow", c);
+				Perform(c, "say", "大胡子！！快点过来！有入侵者呀！！");
+			} else
+			{
+				ChangeBehavior(c, "follow", player);
+				Perform(c, "attack");
+				Perform(c, "say", "大胡子人呢？该不会是你把他给杀了！我要你连他的命一起赔上！受死！");				
+			}
+				
+			Perform(c, "guard", 4);
+			Perform(c, "say", "谁！你这生面孔八成不是什麽好东西，入侵者一律杀之！");
+			Perform(c, "faceto", player);
+				
+			trg2 = 1;			
+		}
+	}
+	if (trg2 == 1)
+	{
+		c = GetChar("铁枪哨兵");
+		if (c>=0 && GetEnemy(c)!=player)
+		{
+			Perform(c, "say", "可恶，这臭小还真会躲！再让我见到要你好看！");
+			trg2 = 2;			
+		}
+	}	
+	if (trg2 == 2)
+	{
+		c = GetChar("铁枪哨兵");
+		if (c>=0 && GetEnemy(c)==player)
+		{
+			Perform(c, "attack");
+			Perform(c, "say", "哈！你是躲不过我的视线的！拿命来！");
+			trg2 = 3;			
+		}
+	}	
+	if (trg2 == 3)
+	{
+		c = GetChar("铁枪哨兵");
+		if (c>=0 && GetEnemy(c)!=player)
+		{
+			Perform(c, "aggress");
+			Perform(c, "say", "又被逃掉了，下次可不会再便宜你了！");
+			trg2 = 4;			
+		}
+	}	
+	
+	if (trg3 == 0)
+	{
+		c = GetAnyChar("大刀哨兵");
+		if (c>=0 && GetHP(c)<=0)
+		{
+			Say(c, "想不到你这小子还有两三下功夫﹒﹒﹒﹒﹒﹒﹒呜﹒﹒﹒");			
+			trg3 = 1;
+		}						
+	}
+	if (trg3 == 1)
+	{
+		c = GetChar("铁枪哨兵");
+		if (c>=0 && GetEnemy(c)==player)
+		{
+			ChangeBehavior(c, "kill", player);
+			Perform(c, "say", "你这小子，杀了我的挚友！要你偿命！");				
+			Perform(c, "faceto", player);
+			trg3 = 2;
+			trg2 = 4;
+		}							
+	}
+	
+	if (trg4 == 0)
+	{
+		c = GetAnyChar("铁枪哨兵");
+		if (c>=0 && GetHP(c)<=0)
+		{		
+			Say(c, "大胡子﹒﹒﹒帮﹒﹒﹒帮我报﹒﹒仇﹒﹒﹒");
+			trg4 = 1;
+		}						
+	}
+	if (trg4 == 1)
+	{
+		c = GetChar("大刀哨兵");
+		if (c>=0 && GetEnemy(c)==player)
+		{			
+			ChangeBehavior(c, "kill", player);
+			Perform(c, "say", "你死定了！！你这小子！");				
+			Perform(c, "faceto", player);
+			trg4 = 2;
+			trg1 = 4;
+		}					
+	}
+}

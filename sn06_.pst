@@ -1,0 +1,7 @@
+// ¥|¤è°}
+int Rule = 5;
+int RoundTime = 15;
+int PlayerSpawn = 5;
+int PlayerSpawnDir = 90;
+int PlayerWeapon = 5;
+int PlayerWeapon2 = 0;

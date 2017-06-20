@@ -1,0 +1,7 @@
+// ¶êº¡¼Ó
+int Rule = 4;
+int RoundTime = 30;
+int PlayerSpawn = 5;
+int PlayerSpawnDir = 90;
+int PlayerWeapon = 5;
+int PlayerWeapon2 = 0;

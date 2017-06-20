@@ -1,0 +1,267 @@
+// 锺乳洞
+int Rule = 10;
+int RoundTime = 10;
+int PlayerSpawn = 9;
+int PlayerSpawnDir = 90;
+int PlayerWeapon = 5;
+int PlayerWeapon2 = 1;
+int PlayerHP = 1500;
+
+int trg0 = 0;
+int trg1 = 0;
+int trg2 = 0;
+int trg3 = 0;
+int trg4 = 0;
+int trg5 = 0;
+int trg6 = 0;
+
+
+OnStart()
+{
+	AddNPC("npc01_01");
+	AddNPC("npc01_02");
+	AddNPC("npc01_03");
+}
+
+GotoLeader(int c)
+{
+	int c2 = GetChar("军枪哨兵长");
+	if (c2 >= 0)
+	{
+		ChangeBehavior(c, "follow", c2);
+		SetTarget(0, "char", c2);
+		ChangeBehavior(c, "attacktarget", 0);
+		return 1;
+	}	
+	
+	return 0;
+}
+
+Report(int c1, int c2, int c3)
+{
+	if (c1>=0 && c3>=0)
+	{
+		SetTarget(0, "char", c1);
+		SetTarget(1, "char", c3);
+		
+		if (Distance(0, 1) < 100)
+		{
+			if (c2 >= 0)
+			{
+				ChangeBehavior(c2, "follow", c3);
+			}
+	
+			ChangeBehavior(c1, "follow", c3);
+			Perform(c1, "pause", 4);
+			Perform(c1, "say", "报告哨兵长！发现入侵者！！");
+			Perform(c1, "faceto", c3);
+		
+			int player = GetChar("player");
+			ChangeBehavior(c3, "follow", player);			
+			Perform(c3, "say", "在那？所有人跟我来！");
+			Perform(c3, "pause", 3);
+			Perform(c3, "faceto", c1);			
+		
+			return 1;
+		}
+	}
+	
+	return 0;
+}
+
+
+OnUpdate()
+{
+	int player = GetChar("player");
+	if (player < 0)
+	{
+		return 0;
+	}
+	
+	int c;
+	int c2;
+	int c3;
+
+	if (trg0 == 0)
+	{
+		c = GetChar("军枪哨兵长"); 
+		c2 = GetChar("铁枪哨兵﹒甲"); 
+		c3 = GetChar("铁枪哨兵﹒乙");
+		
+		if (c>=0 && c2>=0 && c3>=0)
+		{
+			Perform(c, "say", "你们都听到萧老大说的了，给我注意四周的动静！有任何风吹草动立刻回报！");
+			Perform(c, "faceto", c2);
+			
+			ChangeBehavior(c2, "patrol", 0, 1, 4, 2, 3);
+			Perform(c2, "say", "是！");
+			Perform(c2, "faceto", c);
+			
+			ChangeBehavior(c3, "patrol", 18, 19, 75, 55, 79, 38, 77, 78, 14, 20);
+			Perform(c3, "say", "是！");
+			Perform(c3, "pause", 3);
+			Perofrm(c3, "faceto", c);
+			
+			trg0 = 1;
+		}
+	}
+	if (trg0==1 && trg3==0)
+	{
+		c = GetChar("军枪哨兵长"); 	
+		if (c>=0 && GetEnemy(c)==player)
+		{			
+			c2 = GetChar("铁枪哨兵﹒甲"); 
+			c3 = GetChar("铁枪哨兵﹒乙");
+			if (c2 >= 0)
+			{
+				ChangeBehavior(c2, "follow", c);
+				Perform(c2, "say", "是！！");
+				Perform(c2, "pause", 2);
+				Perform(c2, "faceto", c);
+			}
+			if (c3 >= 0)
+			{
+				ChangeBehavior(c3, "follow", c);
+				Perform(c3, "say", "是！！");
+				Perform(c3, "pause", 2);
+				Perform(c2, "faceto", c);
+			}
+			
+			if (c2<0 && c3<0)
+			{
+				Perform(c, "say", "人呢！？可恶！我就不信我一个人对付不了你！");
+				Perform(c, "pause", 5);
+			}
+		
+			Perform(c, "say", "来人呀！！");		
+			Perform(c, "faceto", player);
+		
+			trg0 = 2;
+		}
+	}
+		
+	if (trg1==0 && trg0==1 && trg3==0)
+	{
+		c = GetChar("铁枪哨兵﹒甲");
+		if (c>=0 && GetEnemy(c)==player)
+		{
+			Perform(c, "guard", 3);
+			Perform(c, "say", "你﹒﹒你﹒﹒你是谁！竟敢擅自闯入禁地！找死！");
+			Perform(c, "faceto", player);
+			trg1 = 1;
+		}
+	}	
+	if (trg1==1)
+	{
+		c = GetChar("铁枪哨兵﹒甲");
+		if (c>=0 && GetEnemy(c)!=player)
+		{
+			Perform(c, "say", "奇怪？人跑到那了？？？");
+			trg1 = 2;
+		}
+	}
+	if (trg1==2 && trg3==0)
+	{
+		c = GetChar("铁枪哨兵﹒甲");
+		if (c>=0 && GetEnemy(c)==player)
+		{
+			GotoLeader(c);
+				
+			Perform(c, "say", "又是你！这下子你跑不掉了！你给我等着！");
+			Perform(c, "faceto", player);
+			trg1 = 3;
+			trg3 = 1;	
+		}
+	}		
+	
+	if (trg2==0 && trg0==1 && trg3==0)
+	{
+		c = GetChar("铁枪哨兵﹒乙");
+		if (c>=0 && GetEnemy(c)==player)
+		{
+			Perform(c, "aggress");
+			Perform(c, "say", "哈！正愁着没乐子！让我来试试你的身手吧！");
+			Perform(c, "faceto", player);
+			trg2 = 1;
+		}
+	}		
+	if (trg2 == 1)
+	{
+		c = GetChar("铁枪哨兵﹒乙");
+		if (c>=0 && GetEnemy(c)!=player)
+		{
+			Perform(c, "say", "奇怪？人跑到那了？？？");
+			trg2 = 2;
+		}
+	}			
+	if (trg2==2 && trg3==0)
+	{
+		c = GetChar("铁枪哨兵﹒乙");
+		if (c>=0 && GetEnemy(c)==player)
+		{
+			GotoLeader(c);
+				
+			Perform(c, "say", "又是你！这下子你跑不掉了！你给我等着！");
+			Perform(c, "faceto", player);
+			trg2 = 3;
+			trg3 = 1;
+		}
+	}			
+	
+	if (trg4==0 && trg3==0)
+	{
+		c = GetChar("铁枪哨兵﹒甲");
+		if (c>=0 && GetHP(c)<=GetMaxHP(c)/4)
+		{
+			GotoLeader(c);
+			Perform(c, "say", "可恶！你给我等着！");
+			trg4 = 1;
+			trg3 = 1;
+			trg1 = 3;
+		}
+	}
+	if (trg5==0 && trg3==0)
+	{
+		c = GetChar("铁枪哨兵﹒乙");
+		if (c>=0 && GetHP(c)<=GetMaxHP(c)/4)
+		{
+			GotoLeader(c);
+			Perform(c, "say", "可恶！你给我等着！");
+			trg5 = 1;
+			trg3 = 1;
+			trg2 = 3;
+		}
+	}
+	
+	if (trg3 == 1)
+	{
+		c = GetChar("军枪哨兵长"); 
+		c2 = GetChar("铁枪哨兵﹒甲"); 
+		c3 = GetChar("铁枪哨兵﹒乙");
+		if (Report(c2, c3, c) || Report(c3, c2, c))
+		{
+			trg3 = 2;
+		}
+	}
+	
+	if (trg6 == 0)
+	{
+		c = GetChar("军枪哨兵长");
+		if (c>=0 && GetHP(c)<GetMaxHP(c)/2)
+		{			
+			Perform(c, "guard", 4);
+			Perform(c, "say", "你这小子还真有两下子，来头可不小！！");
+			Perform(c, "faceto", player);
+			trg6 = 1;
+		}
+	}
+	if (trg6 == 1)
+	{
+		c = GetAnyChar("军枪哨兵长");
+		if (GetHP(c) <= 0)
+		{
+			Say(c, "呜﹒﹒﹒你别以为﹒﹒你能够杀的了﹒﹒﹒﹒﹒﹒");
+			trg6 = 2;
+		}
+	}	
+}
